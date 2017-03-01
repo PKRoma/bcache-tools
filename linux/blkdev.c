@@ -49,6 +49,12 @@ int submit_bio_wait(struct bio *bio)
 		BUG();
 	}
 
+	if (ret != bio->bi_iter.bi_size) {
+		fprintf(stderr, "IO error: %i (%s)\n",
+			ret, strerror(errno));
+		return -EIO;
+	}
+
 	if (bio->bi_opf & REQ_FUA)
 		fdatasync(bio->bi_bdev->bd_fd);
 
